@@ -81,6 +81,19 @@ def test_texte_a_la_place_d_un_nombre_refuse():
         assert post(client, distance_km="loin").status_code == 422
 
 
+def test_heure_24_refusee():
+    with TestClient(app) as client:
+        assert post(client, heure_depart=24).status_code == 422
+
+
+def test_alerte_coherente_avec_le_seuil():
+    facile = dict(distance_km=5, poids_kg=3, heure_depart=11, pluie_mm=0,
+                  trafic_index=1, nb_arrets=0, type_vehicule="moto")
+    with TestClient(app) as client:
+        assert post(client).json()["alerte"] is True
+        assert post(client, **facile).json()["alerte"] is False
+
+
 def test_modele_absent_renvoie_503():
     with TestClient(app) as client:
         state.pop("predictor", None)  # on simule un modèle non chargé
