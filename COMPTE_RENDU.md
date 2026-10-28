@@ -1,6 +1,6 @@
 # Compte rendu : TP API LogiAI
 
-**Noms :** Abdo, Yee  **Groupe :** ........
+**Noms :** Abdellah LAKLI, Yaasmina RHARI
 
 ## 1. Environnement et premiers tests
 - Sortie de `python -m pytest` au départ (collez-la) :
@@ -95,4 +95,4 @@ Répondre 503 ou refuser de démarrer ? Qu'est-ce que chaque option fait perdre 
 L'option A donne un diagnostic précis et un comportement prévisible pour les clients ; c'est pour cela que nous l'avons retenue.
 
 ## 7. Lien de la pull request
-.......... (à coller après avoir ouvert la PR depuis `tp-api`)
+https://github.com/Laklinho/LogiAI/pull/1
