@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LogiAI — Prédiction de retard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            padding: 35px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: wait;
+        }
+        #resultat {
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>LogiAI — Prédiction de retard</h2>
+
+        <form id="formulaire">
+            <label>Clé API
+                <input id="cle" type="password" required>
+            </label>
+
+            <label>Distance (km)
+                <input id="distance" type="number" step="any" value="120" required>
+            </label>
+
+            <label>Poids (kg)
+                <input id="poids" type="number" step="any" value="450" required>
+            </label>
+
+            <label>Heure de départ
+                <input id="heure" type="number" step="any" value="17" required>
+            </label>
+
+            <label>Pluie (mm)
+                <input id="pluie" type="number" step="any" value="8" required>
+            </label>
+
+            <label>Indice de trafic
+                <input id="trafic" type="number" step="any" value="7.5" required>
+            </label>
+
+            <label>Nombre d'arrêts
+                <input id="arrets" type="number" step="any" value="4" required>
+            </label>
+
+            <label>Véhicule
+                <select id="vehicule">
+                    <option value="moto">Moto</option>
+                    <option value="fourgon">Fourgon</option>
+                    <option value="camion" selected>Camion</option>
+                </select>
+            </label>
+
+            <button id="envoyer" type="submit">Prédire</button>
+        </form>
+
+        <div id="resultat" role="status"></div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8000/v1/predict";
+
+        async function appelerApi(livraison, cle) {
+            const reponse = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-API-Key": cle
+                },
+                body: JSON.stringify(livraison)
+            });
+
+            const corps = await reponse.json();
+            return { status: reponse.status, corps };
+        }
+
+        document.getElementById("formulaire")
+            .addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                const bouton = document.getElementById("envoyer");
+                const resultat = document.getElementById("resultat");
+                const cle = document.getElementById("cle").value;
+
+                const livraison = {
+                    distance_km: Number(document.getElementById("distance").value),
+                    poids_kg: Number(document.getElementById("poids").value),
+                    heure_depart: Number(document.getElementById("heure").value),
+                    pluie_mm: Number(document.getElementById("pluie").value),
+                    trafic_index: Number(document.getElementById("trafic").value),
+                    nb_arrets: Number(document.getElementById("arrets").value),
+                    type_vehicule: document.getElementById("vehicule").value
+                };
+
+                bouton.disabled = true;
+                resultat.textContent = "Prédiction en cours...";
+
+                try {
+                    const { status, corps } = await appelerApi(livraison, cle);
+
+                    if (status === 200) {
+                        resultat.textContent =
+                            "Probabilité de retard : " +
+                            (corps.probabilite_retard * 100).toFixed(1) +
+                            "%\nAlerte : " +
+                            (corps.alerte ? "Oui" : "Non");
+                    } else if (status === 422) {
+                        resultat.textContent =
+                            "Données invalides :\n" +
+                            JSON.stringify(corps.detail, null, 2);
+                    } else if (status === 401 || status === 403) {
+                        resultat.textContent =
+                            "Accès refusé (" + status + ") : vérifiez votre clé.";
+                    } else {
+                        resultat.textContent =
+                            "Erreur API (" + status + ") : " +
+                            JSON.stringify(corps);
+                    }
+                } catch (erreur) {
+                    resultat.textContent =
+                        "API injoignable ou requête bloquée par CORS. Consultez F12.";
+                    console.error(erreur);
+                } finally {
+                    bouton.disabled = false;
+                }
+            });
+    </script>
+</body>
+</html>

@@ -10,8 +10,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-from logiai.config import (ALERT_THRESHOLD, CAT_FEATURES, DATA_PATH, FEATURES, INFO_PATH,
-                           MODEL_PATH, NUM_FEATURES, SEED, TARGET)
+from logiai.config import (
+    ALERT_THRESHOLD,
+    CAT_FEATURES,
+    DATA_PATH,
+    FEATURES,
+    INFO_PATH,
+    MODEL_PATH,
+    NUM_FEATURES,
+    SEED,
+    TARGET,
+)
 
 
 def train() -> dict:
