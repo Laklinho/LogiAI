@@ -10,7 +10,11 @@ VALIDE = {
 
 
 def post(client, **changements):
-    return client.post("/v1/predict", json={**VALIDE, **changements})
+    return client.post(
+        "/v1/predict",
+        json={**VALIDE, **changements},
+        headers={"X-API-Key": "cle-test-user"}
+    )
 
 
 def test_health_repond_ok():
@@ -72,8 +76,11 @@ def test_vehicule_inconnu_refuse():
 def test_champ_manquant_refuse():
     with TestClient(app) as client:
         body = {k: v for k, v in VALIDE.items() if k != "poids_kg"}
-        assert client.post("/v1/predict", json=body).status_code == 422
-
+        assert client.post(
+            "/v1/predict",
+            json=body,
+            headers={"X-API-Key": "cle-test-user"}
+        ).status_code == 422
 
 def test_champ_inconnu_refuse():
     with TestClient(app) as client:

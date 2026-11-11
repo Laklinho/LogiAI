@@ -1,0 +1,9 @@
+{
+  "distance_km": 120.0,
+  "poids_kg": 450.0,
+  "heure_depart": 17,
+  "pluie_mm": 8.0,
+  "trafic_index": 7.5,
+  "nb_arrets": 4,
+  "type_vehicule": "camion"
+}

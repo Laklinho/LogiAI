@@ -1,6 +1,11 @@
+import os
+
+# Configure test keys before importing the application
+os.environ["API_KEY"] = "cle-test-user"
+os.environ["ADMIN_KEY"] = "cle-test-admin"
+
 import pytest
 from fastapi.testclient import TestClient
-
 from logiai.api.main import app
 
 
