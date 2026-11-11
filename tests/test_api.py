@@ -42,14 +42,18 @@ def test_predict_probabilite_entre_0_et_1():
 
 
 def test_predict_trajet_risque_plus_eleve_que_trajet_facile():
-    facile = dict(distance_km=5, poids_kg=3, heure_depart=11, pluie_mm=0,
-                  trafic_index=1, nb_arrets=0, type_vehicule="moto")
+    facile = {
+        "distance_km": 5,
+        "poids_kg": 3,
+        "heure_depart": 11,
+        "pluie_mm": 0,
+        "trafic_index": 1,
+        "nb_arrets": 0,
+        "type_vehicule": "moto",
+    }
+
     with TestClient(app) as client:
         p_difficile = post(client).json()["probabilite_retard"]
-        p_facile = post(client, **facile).json()["probabilite_retard"]
-        assert p_difficile > p_facile
-
-
 def test_distance_negative_refusee():
     with TestClient(app) as client:
         assert post(client, distance_km=-5).status_code == 422

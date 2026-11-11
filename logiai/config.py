@@ -1,5 +1,11 @@
 """Réglages du projet LogiAI : tout ce qui peut changer est ici."""
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
+ADMIN_KEY = os.getenv("ADMIN_KEY")
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / "data" / "livraisons.csv"
