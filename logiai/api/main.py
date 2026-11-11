@@ -51,6 +51,8 @@ def health():
     return {
         "status": "ok",
         "model_loaded": "predictor" in state,
+        # Indique si les clés sont arrivées (jamais leur valeur) : utile en conteneur
+        "auth_configured": bool(config.API_KEY and config.ADMIN_KEY),
     }
 
 

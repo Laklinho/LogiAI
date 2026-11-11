@@ -7,7 +7,7 @@ Prédire le risque de retard d'une livraison et l'exposer par une API REST (Fast
     python -m venv .venv
     .venv\Scripts\activate.bat        # Windows cmd  (PowerShell : .venv\Scripts\Activate.ps1)
     source .venv/bin/activate         # macOS / Linux
-    pip install -r requirements.txt
+    pip install -r requirements-dev.txt   # exécution + tests + Streamlit
 
 ## Données et modèle
 
@@ -27,3 +27,12 @@ Prédire le risque de retard d'une livraison et l'exposer par une API REST (Fast
 
 - `logiai/api/schemas.py` : les 6 champs manquants de `Livraison`
 - `logiai/api/main.py` : le corps de `predict()`
+
+## Docker (Atelier 5)
+
+    copy .env.example .env            # puis y mettre vos clés
+    python -m logiai.dataset          # données et modèle ne sont pas dans Git :
+    python -m logiai.train            # à générer avant le build
+    docker compose up -d --build
+    # page : http://localhost:8080   API : http://localhost:8001/docs
+    docker compose down               # arrêter

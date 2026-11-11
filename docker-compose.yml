@@ -1,0 +1,34 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: logiai:1.0
+    container_name: logiai-api
+    ports:
+      - "8001:8000"              # TODO 1 : hôte:conteneur
+    env_file:
+      - .env                     # TODO 2 : les clés, lues au démarrage, jamais dans l'image
+    environment:
+      LOGIAI_HOME: /app
+    volumes:
+      - ./models:/app/models     # TODO 3 : modèle et données vus sans reconstruire l'image
+      - ./data:/app/data
+    healthcheck:                 # TODO 4 : pas de curl dans l'image slim -> python
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    image: logiai-web:1.0
+    container_name: logiai-web
+    ports:
+      - "8080:80"
+    depends_on:                  # TODO 5 : attendre que l'API soit saine, pas seulement démarrée
+      api:
+        condition: service_healthy

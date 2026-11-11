@@ -1,0 +1,6 @@
+# Développement local : tests et client Streamlit (hors image Docker)
+-r requirements.txt
+pytest>=8.0
+httpx>=0.27
+requests>=2.31
+streamlit>=1.35
