@@ -7,7 +7,8 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 ADMIN_KEY = os.getenv("ADMIN_KEY")
 
-ROOT = Path(__file__).resolve().parent.parent
+# Racine du projet : LOGIAI_HOME si défini (conteneur : /app), sinon le dossier du dépôt
+ROOT = Path(os.getenv("LOGIAI_HOME", Path(__file__).resolve().parent.parent))
 DATA_PATH = ROOT / "data" / "livraisons.csv"
 MODEL_PATH = ROOT / "models" / "model.joblib"
 INFO_PATH = ROOT / "models" / "model_info.json"

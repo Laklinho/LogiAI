@@ -2,6 +2,7 @@
 from fastapi.testclient import TestClient
 
 from logiai.api.main import app, state
+from tests.conftest import CLE_USER
 
 VALIDE = {
     "distance_km": 120.0, "poids_kg": 450.0, "heure_depart": 17,
@@ -10,7 +11,7 @@ VALIDE = {
 
 
 def post(client, **changements):
-    return client.post("/v1/predict", json={**VALIDE, **changements})
+    return client.post("/v1/predict", json={**VALIDE, **changements}, headers={"X-API-Key": CLE_USER})
 
 
 def test_health_repond_ok():
@@ -72,7 +73,7 @@ def test_vehicule_inconnu_refuse():
 def test_champ_manquant_refuse():
     with TestClient(app) as client:
         body = {k: v for k, v in VALIDE.items() if k != "poids_kg"}
-        assert client.post("/v1/predict", json=body).status_code == 422
+        assert client.post("/v1/predict", json=body, headers={"X-API-Key": CLE_USER}).status_code == 422
 
 
 def test_champ_inconnu_refuse():
